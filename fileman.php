@@ -4,14 +4,21 @@
    	<body>
 
 	<form action="" method="POST" name="input" ENCTYPE="multipart/form-data">
-		<h2> FILE MANAGER v.1.0</h2>
+		<h2> FILE MANAGER v.1.1</h2>
 		
-		Path upload : <input type="text" name="edt_upload"><br>
-		file upload : <input type="file" name="file"><br>
-		<input type="submit" name="btn_upload" value="Upload"><br><br><br>
 		
-		Path download : <input type="text" name="edt_down">
-		<input type="submit" name="btn_down" value="Refresh">
+		Path upload : <input type="text" name="edt_upload"><br><br>
+		file upload : <input type="file" name="file"><br><br>
+		<input type="submit" name="btn_upload_anime" value="Anime">
+		<input type="submit" name="btn_upload_project" value="Project">
+		<input type="submit" name="btn_upload_dokumen" value="Dokumen">
+		<input type="submit" name="btn_upload_musik" value="Musik"><br><br><br>
+		
+		Path download : <input type="text" name="edt_down"><br>
+		<input type="submit" name="btn_download_home" value="Home">
+		<input type="submit" name="btn_download_anime" value="anime">
+		<input type="submit" name="btn_download_apk" value="APK android"><br><br><br>
+		
 	</form>
      </body>
 </html>
@@ -26,40 +33,11 @@
 		return number_format($size / pow(1024, $power), 2, '.', ',')." ".$units[$power];
 	}
 
-	$path = $_GET['folder'];
-	if ($_POST['edt_down'] != "") {
-		$path = $_POST['edt_down'];
-	}
-	echo "<font color=green><b>$path</b></font>";
-
-	$myarray = Array();
-
-	if ($handle = opendir($path)) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != "..") {
-				if (is_file($path.$file)) {
-					$link = "<a href='/download.php?id=$path$file'><h4>$file <br>---->> ".date("d-m-Y H:i:s", fileatime($path.$file)).'<br>---->> '.size(filesize($path.$file))."</h4></a>";		
-					array_push($myarray, $link);
-				}
-				else if (is_dir($path.$file)) {
-					$link = "<a href='/fileman.php?folder=$path$file/'><h1>$file : <----</h1></a>";							
-					array_push($myarray, $link);
-				}
-			}
-		}
-		sort($myarray);
-		foreach($myarray as $f) {
-			echo $f;
-		}
-		closedir($handle);
-	}
-
-	if (isset($_POST['btn_upload'])) {
+	function main_upload($dir_upload) {
 		echo "<pre>";
 		print_r($_FILES);
 		echo "</pre>";
 
-		$dir_upload = "$main_path/Dokumen";
 		$nama_file = $_FILES['file']['name'];
 		$path_upload = $_POST['edt_upload'];
 
@@ -81,6 +59,76 @@
 			echo "<script>alert('<<<< file sudah ada! >>>       upload file');</script>";
 			echo "<h1><font color=blue>File sudah ada!!!</b></font></h1>";
 		}
+	}
+
+	function main_download($dir_downlad) {
+		$path = $_GET['folder'];
+		
+		if ($dir_downlad != "") {
+			$path = $dir_downlad;
+			if ($_POST['edt_down'] != "") {
+				$path = $_POST['edt_down'];
+			}
+		}
+		echo "<font color=green><b>$path</b></font>";
+
+		$myarray = Array();
+
+		if ($handle = opendir($path)) {
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != "..") {
+					if (is_file($path.$file)) {
+						$link = "<a href='/download.php?id=$path$file'><h4>$file <br>---->> ".date("d-m-Y H:i:s", fileatime($path.$file)).'<br>---->> '.size(filesize($path.$file))."</h4></a>";		
+						array_push($myarray, $link);
+					}
+					else if (is_dir($path.$file)) {
+						$link = "<a href='/fileman.php?folder=$path$file/'><h1>$file : <----</h1></a>";							
+						array_push($myarray, $link);
+					}
+				}
+			}
+			sort($myarray);
+			foreach($myarray as $f) {
+				echo $f;
+			}
+			closedir($handle);
+		}
+	}
+
+
+	// upload
+	if (isset($_POST['btn_upload_anime'])) {
+		$dir_upload = "$main_path/Dokumen/anime";
+		main_upload($dir_upload);
+	}
+	else if (isset($_POST['btn_upload_project'])) {
+		$dir_upload = "$main_path/Dokumen/project";
+		main_upload($dir_upload);
+	}
+	else if (isset($_POST['btn_upload_dokumen'])) {
+		$dir_upload = "$main_path/Dokumen";
+		main_upload($dir_upload);
+	}
+	else if (isset($_POST['btn_upload_musik'])) {
+		$dir_upload = "$main_path/Dokumen/musik";
+		main_upload($dir_upload);
+	}
+	// download
+	else if (isset($_POST['btn_download_home'])) {
+		$dir_downlad = "$main_path/";
+		main_download($dir_downlad);
+	}
+	else if (isset($_POST['btn_download_anime'])) {
+		$dir_downlad = "$main_path/Dokumen/anime/";
+		main_download($dir_downlad);
+	}
+	else if (isset($_POST['btn_download_apk'])) {
+		$dir_downlad = "$main_path/Dokumen/android/apk/";
+		main_download($dir_downlad);
+	}
+	else {
+		$dir_downlad = $_GET['folder'];
+		main_download($dir_downlad);
 	}
 
 ?>
