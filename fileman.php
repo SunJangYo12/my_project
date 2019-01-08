@@ -1,5 +1,5 @@
 <html>
-   <head><title>Main Router</title></head>
+   <head><title>personal Router</title></head>
    <head>
    	<body>
 
@@ -12,6 +12,7 @@
 		<input type="submit" name="btn_upload_anime" value="Anime">
 		<input type="submit" name="btn_upload_project" value="Project">
 		<input type="submit" name="btn_upload_dokumen" value="Dokumen">
+		<input type="submit" name="btn_upload_apkdata" value="Apkdata">
 		<input type="submit" name="btn_upload_musik" value="Musik"><br><br><br>
 		
 		Path download : <input type="text" name="edt_down"><br>
@@ -24,7 +25,12 @@
 </html>
 
 <?php
-	$main_path = "/home/sunjangyo12"; 
+	$main_path = "/root";
+	$path_dok = "$main_path"."/Dokumen";
+	$path_anime = "$main_path"."/Dokumen/anime";
+	$path_musik = "$main_path"."/Dokumen/musik";
+	$path_project = "$main_path"."/Dokumen/project";
+	$path_apkdata = "$main_path"."/Dokumen/android/data";
 
 	function size($size) {
 		$size = max(0, (int)$size);
@@ -98,21 +104,21 @@
 
 	// upload
 	if (isset($_POST['btn_upload_anime'])) {
-		$dir_upload = "$main_path/Dokumen/anime";
-		main_upload($dir_upload);
+		main_upload($path_anime);
 	}
 	else if (isset($_POST['btn_upload_project'])) {
-		$dir_upload = "$main_path/Dokumen/project";
-		main_upload($dir_upload);
+		main_upload($path_project);
 	}
 	else if (isset($_POST['btn_upload_dokumen'])) {
-		$dir_upload = "$main_path/Dokumen";
-		main_upload($dir_upload);
+		main_upload($path_dok);
 	}
 	else if (isset($_POST['btn_upload_musik'])) {
-		$dir_upload = "$main_path/Dokumen/musik";
-		main_upload($dir_upload);
+		main_upload($path_musik);
 	}
+	else if (isset($_POST['btn_upload_apkdata'])) {
+		main_upload($path_apkdata);
+	}
+
 	// download
 	else if (isset($_POST['btn_download_home'])) {
 		$dir_downlad = "$main_path/";
